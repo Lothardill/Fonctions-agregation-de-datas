@@ -1,0 +1,98 @@
+-- 1.1. Statistiques globales
+SELECT
+  COUNT(in_stock) AS nb_products,
+  SUM(in_stock) AS nb_products_in_stock,
+  ROUND(AVG(1 - in_stock), 3) AS shortage_rate,
+  SUM(stock_value) AS stock_value,
+  SUM(stock) AS total_stock
+FROM stock_analysis.circle_stock_kpi;
+
+-- 1.2. Statistiques par type de modèle
+SELECT
+  model_type,
+  COUNT(in_stock) AS nb_products,
+  SUM(in_stock) AS nb_products_in_stock,
+  ROUND(AVG(1 - in_stock), 3) AS shortage_rate,
+  SUM(stock_value) AS stock_value,
+  SUM(stock) AS total_stock
+FROM stock_analysis.circle_stock_kpi
+GROUP BY model_type;
+
+-- 1.3. Statistiques par type de modèle et nom du modèle
+SELECT
+  model_type,
+  model_name,
+  COUNT(in_stock) AS nb_products,
+  SUM(in_stock) AS nb_products_in_stock,
+  ROUND(AVG(1 - in_stock), 3) AS shortage_rate,
+  SUM(stock_value) AS stock_value,
+  SUM(stock) AS total_stock
+FROM stock_analysis.circle_stock_kpi
+GROUP BY model_type, model_name
+ORDER BY stock_value DESC;
+
+-- 2) Agrégation des ventes
+
+-- 2.1. Top 10 produits les plus vendus
+CREATE OR REPLACE TABLE stock_analysis.top_products AS
+SELECT
+  product_id,
+  SUM(qty) AS qty
+FROM stock_analysis.circle_sales
+GROUP BY product_id
+ORDER BY qty DESC
+LIMIT 10;
+
+-- 2.2. Ajouter une colonne top_products = 0 par défaut
+CREATE OR REPLACE TABLE stock_analysis.circle_stock_kpi_top AS
+SELECT
+  *,
+  0 AS top_products
+FROM stock_analysis.circle_stock_kpi;
+
+-- 2.3. Marquer les top_products = 1 si présents dans la table précédente
+UPDATE stock_analysis.circle_stock_kpi_top AS s
+SET s.top_products = 1
+FROM stock_analysis.top_products AS p
+WHERE s.product_id = p.product_id;
+
+-- 3) Estimation des jours de stock
+
+-- 3.1. Calcul des ventes moyennes quotidiennes sur 91 jours
+CREATE OR REPLACE TABLE stock_analysis.circle_sales_daily AS
+SELECT
+  product_id,
+  SUM(qty) AS qty_91,
+  ROUND(SUM(qty) / 91, 2) AS avg_daily_qty_91
+FROM stock_analysis.circle_sales
+WHERE date_date >= DATE_SUB('2021-10-01', INTERVAL 91 DAY)
+GROUP BY product_id;
+
+-- 3.2. Identifier les top produits avec forecast_stock < 50
+SELECT
+  product_id,
+  product_name,
+  top_products,
+  stock,
+  forecast_stock
+FROM stock_analysis.circle_stock_kpi_top
+WHERE top_products = 1
+  AND forecast_stock < 50
+ORDER BY product_id;
+
+-- 3.3. Comparer ventes moyennes et stock prévisionnel
+SELECT
+  s.product_id,
+  s.product_name,
+  s.forecast_stock,
+  d.avg_daily_qty_91,
+  ROUND(s.forecast_stock / d.avg_daily_qty_91, 2) AS nb_days_remaining
+FROM stock_analysis.circle_stock_kpi_top AS s
+JOIN stock_analysis.circle_sales_daily AS d
+  ON s.product_id = d.product_id
+WHERE s.product_id IN (
+  "TS001BTB-MAM01_U_WH_XS",
+  "TS001BTB-MAM01_U_BL_M",
+  "TS001BTB-MAM01_U_WH_M"
+)
+ORDER BY s.product_id;
