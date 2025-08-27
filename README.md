@@ -18,3 +18,11 @@ Objectif : enrichir les données prêtes de la Partie 1 pour produire des indica
 Fichiers :
 - `2-inventory_stats.sql` : requêtes permettant de passer d’une table brute de stock à une table enrichie exploitable pour l’analyse.
 - `2-inventory_stats.csv` : dataset brute de stock contenant les colonnes modèle, couleur, taille, prix et niveaux de stock.
+
+## Partie 3 – Analyse logistique des expéditions
+
+Objectif : analyser et enrichir des données d’expédition pour calculer des statuts, délais et indicateurs logistiques clés.
+
+Fichiers :
+- `3-shipments_analysis.sql` : requêtes SQL pour transformer les données brutes en tables enrichies (statuts, délais, KPIs).
+- `3-shipments.csv`, `3-shipments_products.csv` : datasets
