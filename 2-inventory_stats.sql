@@ -5,7 +5,7 @@ SELECT
   ROUND(AVG(1 - in_stock), 3) AS shortage_rate,
   SUM(stock_value) AS stock_value,
   SUM(stock) AS total_stock
-FROM stock_analysis.circle_stock_kpi;
+FROM inventory_stats;
 
 -- 1.2. Statistiques par type de modèle
 SELECT
@@ -15,7 +15,7 @@ SELECT
   ROUND(AVG(1 - in_stock), 3) AS shortage_rate,
   SUM(stock_value) AS stock_value,
   SUM(stock) AS total_stock
-FROM stock_analysis.circle_stock_kpi
+FROM inventory_stats
 GROUP BY model_type;
 
 -- 1.3. Statistiques par type de modèle et nom du modèle
@@ -27,7 +27,7 @@ SELECT
   ROUND(AVG(1 - in_stock), 3) AS shortage_rate,
   SUM(stock_value) AS stock_value,
   SUM(stock) AS total_stock
-FROM stock_analysis.circle_stock_kpi
+FROM inventory_stats
 GROUP BY model_type, model_name
 ORDER BY stock_value DESC;
 
@@ -44,14 +44,14 @@ ORDER BY qty DESC
 LIMIT 10;
 
 -- 2.2. Ajouter une colonne top_products = 0 par défaut
-CREATE OR REPLACE TABLE stock_analysis.circle_stock_kpi_top AS
+CREATE OR REPLACE TABLE inventory_stats_top AS
 SELECT
   *,
   0 AS top_products
-FROM stock_analysis.circle_stock_kpi;
+FROM inventory_stats;
 
 -- 2.3. Marquer les top_products = 1 si présents dans la table précédente
-UPDATE stock_analysis.circle_stock_kpi_top AS s
+UPDATE inventory_stats_top AS s
 SET s.top_products = 1
 FROM stock_analysis.top_products AS p
 WHERE s.product_id = p.product_id;
@@ -75,7 +75,7 @@ SELECT
   top_products,
   stock,
   forecast_stock
-FROM stock_analysis.circle_stock_kpi_top
+FROM inventory_stats_top
 WHERE top_products = 1
   AND forecast_stock < 50
 ORDER BY product_id;
@@ -87,7 +87,7 @@ SELECT
   s.forecast_stock,
   d.avg_daily_qty_91,
   ROUND(s.forecast_stock / d.avg_daily_qty_91, 2) AS nb_days_remaining
-FROM stock_analysis.circle_stock_kpi_top AS s
+FROM inventory_stats_top AS s
 JOIN stock_analysis.circle_sales_daily AS d
   ON s.product_id = d.product_id
 WHERE s.product_id IN (
