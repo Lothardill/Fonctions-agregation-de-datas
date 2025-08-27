@@ -1,3 +1,5 @@
+-- 1) Statistiques
+
 -- 1.1. Statistiques globales
 SELECT
   COUNT(in_stock) AS nb_products,
