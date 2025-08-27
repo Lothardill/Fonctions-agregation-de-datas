@@ -26,3 +26,10 @@ Objectif : analyser et enrichir des données d’expédition pour calculer des s
 Fichiers :
 - `3-shipments_analysis.sql` : requêtes SQL pour transformer les données brutes en tables enrichies (statuts, délais, KPIs).
 - `3-shipments.csv`, `3-shipments_products.csv` : datasets
+## Partie 4 – Analyse du funnel commercial
+
+Objectif : analyser et enrichir des données du funnel commercial afin de suivre les étapes de conversion (leads → opportunités → clients), calculer les taux de conversion et les délais moyens.
+
+Fichiers :
+- `4-sales_funnel_analysis.sql` : requêtes SQL pour explorer et enrichir les données du funnel (stages, taux, délais).
+- `4-sales_funnel.csv` : dataset brut du funnel commercial.
