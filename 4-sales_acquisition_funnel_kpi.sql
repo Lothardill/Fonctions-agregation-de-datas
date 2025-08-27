@@ -1,10 +1,10 @@
 -- 1. Exploration de la table brute
 SELECT *
-FROM sales.sales_acquisition_funnel;
+FROM sales_acquisition_funnel;
 
 -- 2. Vérification de la clé primaire
 SELECT company, COUNT(*) AS nb
-FROM sales.sales_acquisition_funnel
+FROM sales_acquisition_funnel
 GROUP BY company
 HAVING nb > 1
 ORDER BY nb DESC;
@@ -43,7 +43,7 @@ SELECT
   DATE_DIFF(date_customer,date_lead,DAY) AS lead2customer_time,
   DATE_DIFF(date_opportunity,date_lead,DAY) AS lead2opportunity_time,
   DATE_DIFF(date_customer,date_opportunity,DAY) AS opportunity2customer_time
-FROM sales.sales_acquisition_funnel;
+FROM sales_acquisition_funnel;
 
 -- 4. Agrégation globale
 SELECT
@@ -55,7 +55,7 @@ SELECT
   ROUND(AVG(lead2customer_time),2) AS lead2customer_time,
   ROUND(AVG(lead2opportunity_time),2) AS lead2opportunity_time,
   ROUND(AVG(opportunity2customer_time),2) AS opportunity2customer_time
-FROM sales.sales_acquisition_funnel_kpi;
+FROM sales_acquisition_funnel_kpi;
 
 -- 5. Agrégation par priorité
 SELECT
@@ -68,7 +68,7 @@ SELECT
   ROUND(AVG(lead2customer_time),2) AS lead2customer_time,
   ROUND(AVG(lead2opportunity_time),2) AS lead2opportunity_time,
   ROUND(AVG(opportunity2customer_time),2) AS opportunity2customer_time
-FROM sales.sales_acquisition_funnel_kpi
+FROM sales_acquisition_funnel_kpi
 GROUP BY priority;
 
 -- 6. Agrégation par mois
@@ -82,6 +82,6 @@ SELECT
   ROUND(AVG(lead2customer_time),2) AS lead2customer_time,
   ROUND(AVG(lead2opportunity_time),2) AS lead2opportunity_time,
   ROUND(AVG(opportunity2customer_time),2) AS opportunity2customer_time
-FROM sales.sales_acquisition_funnel_kpi
+FROM sales_acquisition_funnel_kpi
 GROUP BY month_lead
 ORDER BY month_lead;
