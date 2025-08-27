@@ -9,7 +9,7 @@ Objectif : ce projet illustre comment explorer, nettoyer et enrichir une table d
 
 Fichiers :
 - `1-requete-data-management-de-linventaire.sql` : requêtes permettant de passer d’une table brute de stock à une table enrichie exploitable pour l’analyse.
-- `1-stock_analysis.circle_stock.csv` : dataset brute de stock contenant les colonnes modèle, couleur, taille, prix et niveaux de stock.
+- `1-stock_analysis.csv` : dataset brute de stock contenant les colonnes modèle, couleur, taille, prix et niveaux de stock.
 
 ## Partie 2 – Transformation & indicateurs (inventory_stats)
 
